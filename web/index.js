@@ -261,7 +261,7 @@ app.post("/api/webhooks/fulfillment_events_create", async (req, res) => {
                         sender_phone: orderData.customer.phone
                       })
                         .then(async function (response) {
-                          console.log('fulfillment in---->', response.data);
+                          console.log('fulfillment in---->', response.data)
                         })
                         .catch(function (error) {
                           console.log(error);
