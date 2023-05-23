@@ -79,7 +79,7 @@ app.get('/auth/callback', async (req, res) => {
       rawRequest: req,
       rawResponse: res,
     });
-
+    console.log("webhooks register")
     const response = await shopify.api.webhooks.register({
       session: callbackResponse.session,
     });
@@ -115,6 +115,7 @@ app.post('/api/webhooks', express.text({ type: '*/*' }), async (req, res) => {
       rawRequest: req,
       rawResponse: res,
     });
+    console.log("product webhooks")
   } catch (error) {
     console.log(error.message);
   }
@@ -127,6 +128,7 @@ app.post("/api/webhooks/orders_create", async (req, res) => {
       rawRequest: req,
       rawResponse: res,
     });
+    console.log("orders create webhook")
     const orderData = await shopify.api.rest.Order.find({
       session: res.locals.shopify.session,
       id: req.header('x-shopify-order-id'),
@@ -137,16 +139,37 @@ app.post("/api/webhooks/orders_create", async (req, res) => {
       const array = lineItems?.includes(true);
       if (array) {
         const shopData = await shopify.api.rest.Shop.all({ session: res.locals.shopify.session });
-        axios.post(`${baseUrl}/api/orders/mail`, {
-          mail_to: orderData?.customer?.email,
-          store_owner: shopData[0].store_owner,
-          order_number: orderData.order_number
-        })
+        const orderArray = [orderData];
+        const lineItemsOrders = orderArray.map(itm => itm.line_items.map((itms) => (itms.vendor.indexOf("RIBBON_REELS_CARD") > -1 ? itms.vendor : 0)).indexOf("RIBBON_REELS_CARD") > -1 ? itm : []);
+        const rows = lineItemsOrders.map(element => {
+          if (!Array.isArray(element)) {
+            return element;
+          }
+        });
+        const rowsArray = rows.filter(item => item !== undefined);
+        const newArr = rowsArray.map(v => ({
+          ...v, store_owner: shopData[0].shop_owner,
+          reel_revenue: v?.line_items[0].price
+        }));
+        console.log("newarr---->", orderData?.customer.email, orderData.id, orderData.customer.first_name + ' ' + orderData.customer.last_name)
+        axios.post(`${baseUrl}/orders/create`, newArr)
           .then(function (response) {
-            console.log('order in---->', response.data);
+            // console.log('order in---->', orderData, response);
+            axios.post(`${baseUrl}/orders/mailAndMessage`, {
+              mail_to: orderData.customer.email,
+              order_id: orderData.id,
+              sender_name: orderData.customer.first_name + ' ' + orderData.customer.last_name,
+              sender_phone: orderData.customer.phone
+            })
+              .then(function (response) {
+                // console.log('mail---->', orderData, response.data);
+              })
+              .catch(function (error) {
+                // console.log(error);
+              });
           })
           .catch(function (error) {
-            console.log(error);
+            // console.log(error);
           });
       }
     }
@@ -159,9 +182,8 @@ app.post("/api/webhooks/orders_create", async (req, res) => {
 });
 
 app.post("/api/webhooks/fulfillment_events_create", async (req, res) => {
-  axios.post(`${baseUrl}/api/file/findFile`, {
-    order_id: req.header('x-shopify-order-id')
-  })
+  const order_id = req.header('x-shopify-order-id')
+  axios.get(`${baseUrl}/file/findFile/${order_id}/gifter`)
     .then(async function (response) {
       console.log('fulfillment in---->', response.data);
       if (response.data.length > 0) {
@@ -215,10 +237,11 @@ app.post("/api/webhooks/fulfillment_events_create", async (req, res) => {
                   if (fulfillmentParticularEventData) {
                     if (fulfillmentParticularEventData.fulfillment_event.status === "out_for_delivery") {
                       const shopData = await shopify.api.rest.Shop.all({ session: res.locals.shopify.session });
-                      axios.post(`${baseUrl}/api/orders/mail`, {
-                        mail_to: orderData?.customer?.email,
-                        store_owner: shopData[0].store_owner,
-                        order_number: orderData?.order_number
+                      axios.post(`${baseUrl}/orders/mailAndMessage`, {
+                        mail_to: orderData.customer.email,
+                        order_id: orderData.id,
+                        sender_name: orderData.customer.first_name + ' ' + orderData.customer.last_name,
+                        sender_phone: orderData.customer.phone
                       })
                         .then(async function (response) {
                           console.log('fulfillment in---->', response.data);
@@ -231,10 +254,11 @@ app.post("/api/webhooks/fulfillment_events_create", async (req, res) => {
                     var estimatedDays = Math.round(((estimatedDate.getTime()) / (1000 * 3600 * 60 * 60 * 24))).toFixed(0);
                     cron.schedule(`0 0 ${estimatedDays} * *`, async () => {
                       const shopData = await shopify.api.rest.Shop.all({ session: res.locals.shopify.session });
-                      axios.post(`${baseUrl}/api/orders/mail`, {
-                        mail_to: orderData?.customer?.email,
-                        store_owner: shopData[0].store_owner,
-                        order_number: orderData?.order_number
+                      axios.post(`${baseUrl}/orders/mailAndMessage`, {
+                        mail_to: orderData.customer.email,
+                        order_id: orderData.id,
+                        sender_name: orderData.customer.first_name + ' ' + orderData.customer.last_name,
+                        sender_phone: orderData.customer.phone
                       })
                         .then(async function (response) {
                           console.log('fulfillment in---->', response.data);
