@@ -15,10 +15,7 @@ const client = new Client({
   user: isProduction ? process.env.PG_USER : "postgres",
   password: isProduction ? process.env.PG_PASSWORD : "12345",
   database: isProduction ? process.env.PG_DATABASE : "postgres",
-  port: isProduction ? process.env.PG_PORT : 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  port: 5432,
 });
 await client.connect();
 export default {
