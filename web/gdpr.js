@@ -16,7 +16,10 @@ const client = new Client({
   password: isProduction ? process.env.PG_PASSWORD : "12345",
   database: isProduction ? process.env.PG_DATABASE : "postgres",
   port: isProduction ? process.env.PG_PORT : 5432,
-  sslmode: "require"
+  ssl: {
+    require: true,
+    rejectUnauthorized: false,
+  },
 });
 await client.connect();
 export default {
