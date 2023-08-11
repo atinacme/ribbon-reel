@@ -17,7 +17,6 @@ const client = new Client({
   database: isProduction ? process.env.PG_DATABASE : "postgres",
   port: isProduction ? process.env.PG_PORT : 5432,
   ssl: {
-    require: true,
     rejectUnauthorized: false,
   },
 });
