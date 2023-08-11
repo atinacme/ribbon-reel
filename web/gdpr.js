@@ -25,6 +25,7 @@ const client = isProduction ? new Client(config) : new Client({
   database: "postgres",
   port: 5432,
 });
+console.log("client---->", client);
 await client.connect();
 export default {
   /**
