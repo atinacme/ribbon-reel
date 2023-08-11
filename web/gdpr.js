@@ -15,9 +15,9 @@ const client = new Client({
   user: isProduction ? process.env.PG_USER : "postgres",
   password: isProduction ? process.env.PG_PASSWORD : "12345",
   database: isProduction ? process.env.PG_DATABASE : "postgres",
-  port: 5432,
-})
-await client.connect()
+  port: isProduction ? process.env.PG_PORT : 5432,
+});
+await client.connect();
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,
@@ -120,8 +120,8 @@ export default {
           const query = {
             text: 'SELECT * FROM shopify_sessions where shop = $1',
             values: [shop],
-          }
-          const data = await client.query(query)
+          };
+          const data = await client.query(query);
           const lineItems = payload?.line_items?.map((itms) => (itms?.vendor?.indexOf("RIBBON_REELS_CARD") > -1));
           const array = lineItems?.includes(true);
           if (array) {
@@ -175,8 +175,8 @@ export default {
         const query = {
           text: 'SELECT * FROM shopify_sessions where shop = $1',
           values: [shop],
-        }
-        const data = await client.query(query)
+        };
+        const data = await client.query(query);
         axios.get(`${baseUrl}/file/findFile/${payload.id}/gifter`)
           .then(async function (response) {
             if (response) {
