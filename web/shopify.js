@@ -4,7 +4,7 @@ import { PostgreSQLSessionStorage } from "@shopify/shopify-app-session-storage-p
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
 
 // const DB_PATH = process.env.NODE_ENV === 'production' ? `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}` : `postgresql://postgres:12345@localhost:5432/postgres`;
-const DB_PATH = process.env.NODE_ENV === 'production' ? `postgres://message-wrap-db:AVNS_jbxH-jlFe4Ni7rCbQWx@app-c7567137-658f-4cfa-bf7c-021aa90e5dcd-do-user-14501060-0.b.db.ondigitalocean.com:25060/message-wrap-db?sslmode=require` : `postgresql://postgres:12345@localhost:5432/postgres`;
+const DB_PATH = process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL : `postgresql://postgres:12345@localhost:5432/postgres`;
 
 const billingConfig = {
   "My Shopify One-Time Charge": {

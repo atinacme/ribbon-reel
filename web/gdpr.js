@@ -10,11 +10,19 @@ const { Client } = pkg;
  */
 const isProduction = process.env.NODE_ENV === "production";
 const baseUrl = isProduction ? 'https://ribbon-reel-backend.herokuapp.com/api' : 'http://localhost:8080/api';
-const client = new Client({
-  host: isProduction ? process.env.PG_HOST : "localhost",
-  user: isProduction ? process.env.PG_USER : "postgres",
-  password: isProduction ? process.env.PG_PASSWORD : "12345",
-  database: isProduction ? process.env.PG_DATABASE : "postgres",
+const config = {
+  connectionString: process.env.DATABASE_URL,
+  // Beware! The ssl object is overwritten when parsing the connectionString
+  ssl: {
+    rejectUnauthorized: false,
+    // ca: fs.readFileSync('/path/to/server-certificates/root.crt').toString(),
+  },
+};
+const client = isProduction ? new Client(config) : new Client({
+  host: "localhost",
+  user: "postgres",
+  password: "12345",
+  database: "postgres",
   port: 5432,
 });
 await client.connect();
