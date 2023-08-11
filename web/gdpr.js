@@ -14,6 +14,7 @@ const config = {
   connectionString: process.env.DATABASE_URL,
   // Beware! The ssl object is overwritten when parsing the connectionString
   ssl: {
+    require: true,
     rejectUnauthorized: false,
     // ca: fs.readFileSync('/path/to/server-certificates/root.crt').toString(),
   },
