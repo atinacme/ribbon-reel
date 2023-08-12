@@ -19,7 +19,14 @@ const client = isProduction ? new Client({ connectionString: connectionString })
   port: 5432,
 });
 console.log("client---->", client);
-await client.connect();
+client.connect()
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch(err => {
+    console.error('Error connecting to the database:', err);
+  });
+// await client.connect();
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,
