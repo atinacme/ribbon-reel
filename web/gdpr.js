@@ -18,8 +18,8 @@ const client = isProduction ? new Client({ connectionString: connectionString })
   database: "postgres",
   port: 5432,
 });
-const conn = await client.connect();
-console.log("client---->", conn);
+console.log("client---->", client);
+await client.connect();
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,
