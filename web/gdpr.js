@@ -11,7 +11,7 @@ const { Client } = pkg;
 const isProduction = process.env.NODE_ENV === "production";
 const baseUrl = isProduction ? 'https://ribbon-reel-backend.herokuapp.com/api' : 'http://localhost:8080/api';
 const connectionString = process.env.DATABASE_URL;
-const client = isProduction ? new Client({ connectionString: connectionString, ssl: { rejectUnauthorized: true } }) : new Client({
+const client = isProduction ? new Client({ connectionString: connectionString, ssl: { rejectUnauthorized: false } }) : new Client({
   host: "localhost",
   user: "postgres",
   password: "12345",
