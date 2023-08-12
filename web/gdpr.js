@@ -18,7 +18,7 @@ const client = isProduction ? new Client({ connectionString: connectionString })
   database: "postgres",
   port: 5432,
 });
-console.log("client---->", client);
+// console.log("client---->", client);
 client.connect()
   .then(() => {
     console.log('Connected to the database');
