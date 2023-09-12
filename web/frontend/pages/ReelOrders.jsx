@@ -27,7 +27,7 @@ export default function ReelOrders() {
                 fetch("/api/shop")
                     .then((res) => res.json())
                     .then((data) => {
-                        shop = data[0].shop_owner;
+                        shop = data.data[0].shop_owner;
                     });
             };
             ShopData();
@@ -35,7 +35,8 @@ export default function ReelOrders() {
         try {
             const handleGetAllOrders = async () => {
                 fetch("/api/orders/all").then((res) => res.json()).then((data) => {
-                    const lineItems = data.map(itm => itm.line_items.map((itms) => (itms.vendor.indexOf("RIBBON_REELS_CARD") > -1 ? itms.vendor : 0)).indexOf("RIBBON_REELS_CARD") > -1 ? itm : []);
+                    const lineItems = data.data.map(itm => itm.line_items.map((itms) => (itms.vendor.indexOf("RIBBON_REELS_CARD") > -1 ? itms.vendor : 0)).indexOf("RIBBON_REELS_CARD") > -1 ? itm : []);
+
                     const rows = lineItems.map(element => {
                         if (!Array.isArray(element)) {
                             return element;

@@ -22,14 +22,6 @@ const client = isProduction ? new Client({
   database: "postgres",
   port: 5432,
 });
-console.log("client---->", client);
-// client.connect()
-//   .then(() => {
-//     console.log('Connected to the database');
-//   })
-//   .catch(err => {
-//     console.error('Error connecting to the database:', err);
-//   });
 await client.connect();
 export default {
   /**
@@ -286,4 +278,4 @@ export default {
   },
 };
 
-// await client.end()
+// await client.end();
