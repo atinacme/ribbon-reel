@@ -6,6 +6,41 @@
     margin-bottom: 20px;
 }
 
+.modal-content_wrap {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.modal_img {
+    width: 40%;
+    height: auto;
+}
+
+.modal_title {
+    width: 60%;
+}
+
+.modal-content_wrap img {
+    width: 100%;
+    max-width: 100px;
+    margin: 0 auto;
+    display: block;
+}
+
+.modal-content {
+    display: grid;
+    gap: 10px;
+}
+
+.brand_img {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .riben-reels-wrapper {
     display: flex;
     justify-content: space-between;
